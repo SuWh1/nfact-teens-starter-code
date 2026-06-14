@@ -85,8 +85,19 @@
 | `src/components/Entries.tsx` | Пример работы с базой (читать/добавить/удалить) |
 | `src/lib/supabase.ts` | Подключение к Supabase |
 | `supabase/migrations/` | Таблицы базы (применяются `npm run db:push`) |
+| `supabase/functions/ai/` | AI на бесплатном ключе Gemini (день 5) |
 | `AGENTS.md` | Контекст для Codex — он читает это сам |
 | `CODEX_SETUP.md` | Готовые промпты для Codex по дням |
+
+---
+
+## 🤖 AI (день 5) — бесплатный Gemini
+
+Внутри уже есть AI-функция (`supabase/functions/ai`). Чтобы включить:
+1. Возьми бесплатный ключ: [aistudio.google.com/apikey](https://aistudio.google.com/apikey)
+2. Положи его в секрет: `npm run ai:secret -- GEMINI_API_KEY=твой_ключ`
+3. Задеплой: `npm run ai:deploy`
+4. Вызывай из кода: `supabase.functions.invoke('ai', { body: { prompt, system } })` → `data.text`
 
 ---
 
