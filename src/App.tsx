@@ -1,41 +1,19 @@
-import { useEffect, useState } from 'react';
-import type { Session } from '@supabase/supabase-js';
-import { supabase } from './lib/supabase';
-import { Auth } from './components/Auth';
-import { Entries } from './components/Entries';
+// Стартовый экран твоего проекта — пока он простой и пустой.
+// Когда понадобятся вход и база данных, готовые примеры уже лежат рядом:
+//   src/components/Auth.tsx      — вход / регистрация
+//   src/components/Entries.tsx   — чтение и запись в базу
+// Просто попроси Codex подключить их на экран.
 
 export default function App() {
-  const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // 1) текущая сессия при загрузке
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setLoading(false);
-    });
-    // 2) подписка на вход/выход
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, s) => {
-      setSession(s);
-    });
-    return () => sub.subscription.unsubscribe();
-  }, []);
-
-  if (loading) return <main className="container"><p>Загрузка…</p></main>;
-
   return (
     <main className="container">
-      <header className="header">
-        <h1>Мой проект 🚀</h1>
-        {session && (
-          <button className="ghost" onClick={() => supabase.auth.signOut()}>
-            Выйти
-          </button>
-        )}
-      </header>
-
-      {/* Нет сессии → показываем вход. Есть → показываем приложение. */}
-      {!session ? <Auth /> : <Entries userEmail={session.user.email ?? ''} />}
+      <section className="hello">
+        <h1>Привет! 🚀</h1>
+        <p>Это твой проект. Пока тут пусто — самое интересное впереди.</p>
+        <p className="hello__hint">
+          Открой Codex и опиши свою идею — этот экран станет твоим приложением.
+        </p>
+      </section>
     </main>
   );
 }
