@@ -1,0 +1,25 @@
+name: keep-awake
+
+# Раз в день шлёт один запрос к Supabase, чтобы бесплатный проект не «уснул»
+# после недели без активности. Никаких данных не меняет — только пинг.
+
+on:
+  schedule:
+    - cron: "23 7 * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase
+        run: |
+          # Это ПУБЛИЧНЫЕ значения (тот же URL и anon-ключ, что в .env.local и в браузере).
+          # Данные защищает RLS. НИКОГДА не вставляй сюда service_role ключ.
+          SUPABASE_URL="https://PASTE-YOUR-PROJECT.supabase.co"
+          SUPABASE_ANON_KEY="PASTE-YOUR-ANON-KEY"
+          case "$SUPABASE_URL$SUPABASE_ANON_KEY" in
+            *PASTE*) echo "Не настроено: впиши свои VITE_SUPABASE_URL и VITE_SUPABASE_ANON_KEY из .env.local"; exit 0 ;;
+          esac
+          code=$(curl -s -o /dev/null -w "%{http_code}" "$SUPABASE_URL/rest/v1/" -H "apikey: $SUPABASE_ANON_KEY")
+          echo "Supabase ответил: $code"
