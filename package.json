@@ -11,6 +11,7 @@
     "db:link": "supabase link",
     "db:new": "supabase migration new",
     "db:push": "supabase db push",
+    "keep-awake:setup": "node scripts/setup-keep-awake.mjs",
     "ai:secret": "supabase secrets set",
     "ai:deploy": "supabase functions deploy ai"
   },

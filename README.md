@@ -30,7 +30,8 @@
    Запомни пароль базы. Подожди ~2 минуты, пока проект поднимется.
 
 5. **Вставь ключи.** Скопируй файл `.env.example` → переименуй копию в `.env.local`.
-   В Supabase: **Project Settings → API**. Скопируй **Project URL** и **anon public** ключ,
+   В Supabase: **Project Settings → API Keys**. Скопируй **Project URL** и **Publishable key**
+   (`sb_publishable_...`; если показывается старый интерфейс — legacy **anon** key),
    вставь в `.env.local`:
    ```
    VITE_SUPABASE_URL=https://твой-проект.supabase.co
@@ -74,16 +75,17 @@
 перестаёт работать. Чтобы проект жил сам, в репо уже есть робот
 `.github/workflows/keep-awake.yml` — он раз в день делает один тихий запрос к твоей базе.
 
-Включить — один раз вписать **те же два значения, что в `.env.local`**:
+Настрой это сразу после `npm run db:push`. Самостоятельно копировать ключи в workflow не нужно:
 
-1. Открой `.github/workflows/keep-awake.yml`.
-2. Замени `PASTE-YOUR-PROJECT.supabase.co` на свой `VITE_SUPABASE_URL`, а `PASTE-YOUR-ANON-KEY`
-   на свой `VITE_SUPABASE_ANON_KEY`.
-3. `git add -A && git commit -m "keep awake" && git push`.
+1. Открой промпт **«Keep-alive без отладки ребёнком»** в `CODEX_SETUP.md` и отправь его Codex.
+2. Codex запустит `npm run keep-awake:setup`. Команда прочитает два значения из `.env.local`,
+   сохранит их как **GitHub Actions Secrets**, проверит настоящий запрос к таблице `entries`
+   и запустит workflow вручную.
+3. Задача закончена только когда GitHub Actions показывает зелёный запуск и лог
+   `Supabase database ping succeeded: HTTP 200`.
 
-> Это **публичные** значения (anon-ключ и так уходит в браузер, данные защищает RLS) — вписывать
-> их сюда безопасно. `service_role` ключ сюда НЕ вставляй никогда. Не уверен — попроси Codex,
-> промпт есть в `CODEX_SETUP.md`.
+> `service_role` ключ нельзя использовать никогда. Если GitHub CLI не авторизован, Codex должен
+> остановиться и попросить ментора выполнить `gh auth login`, а не оставлять ребёнку сломанный cron.
 >
 > GitHub может приостановить расписание после ~60 дней полного простоя репо — тогда хватит
 > одного клика «Enable workflow», чтобы снова запустить.
